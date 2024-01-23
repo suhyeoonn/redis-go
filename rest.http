@@ -1,1 +1,3 @@
-GET http://localhost:8080/photos
+GET http://localhost:8080/photos-redis
+###
+GET http://localhost:8080/photos-mysql
