@@ -38,22 +38,3 @@ func Open() {
 	}
 	DB = db
 }
-
-func Create() (err error) { // TODO model로 이동
-	stmt, err := DB.Prepare("INSERT INTO photos VALUES( ?, ?, ?, ?, ? )") // ? = placeholder
-	if err != nil {
-		panic(err.Error()) // proper error handling instead of panic in your app
-	}
-
-	rs, err := stmt.Exec(1, 1, "a", "b", "c")
-	if err != nil {
-		return
-	}
-	id, err := rs.LastInsertId()
-	if err != nil {
-		log.Fatalln(err)
-	}
-	fmt.Println(id)
-	defer stmt.Close()
-	return
-}

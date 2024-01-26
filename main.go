@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"redis-go/src/fetch"
+	"redis-go/src/models"
 	"redis-go/src/mysql"
 	"redis-go/src/photos"
 	"redis-go/src/redis"
@@ -17,7 +18,7 @@ func main() {
 
 	r := gin.Default()
 
-	r.GET("/photos-redis", func(c *gin.Context) {
+	r.GET("/photos", func(c *gin.Context) {
 		// redis에 저장된 값이 있으면 리턴
 		if cache := redis.GetCache("photos"); cache != "" {
 			fmt.Println("Cache Hit")
@@ -41,11 +42,30 @@ func main() {
 		})
 	})
 
+	r.GET("/photos-redis", func(c *gin.Context) {
+		cache := redis.GetCache("photos")
+		c.JSON(http.StatusOK, gin.H{
+			"photos": cache,
+		})
+	})
+
+	r.POST("/photos-mysql", func(c *gin.Context) {
+		mysql.Open()
+		defer mysql.DB.Close()
+
+		data := fetch.FetchData("https://jsonplaceholder.typicode.com/photos")
+		models.CreatePhotos(string(data))
+	})
+
 	r.GET("/photos-mysql", func(c *gin.Context) {
 		mysql.Open()
 		defer mysql.DB.Close()
 
-		mysql.Create()
+		photos := models.GetPhotos()
+
+		c.JSON(http.StatusOK, gin.H{
+			"photos": photos,
+		})
 		// 참고: https://dejavuqa.tistory.com/331
 		// Use the DB normally, execute the querys etc
 	})

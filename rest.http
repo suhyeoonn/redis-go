@@ -1,3 +1,6 @@
 GET http://localhost:8080/photos-redis
 ###
 GET http://localhost:8080/photos-mysql
+
+### 
+POST http://localhost:8080/photos-mysql
